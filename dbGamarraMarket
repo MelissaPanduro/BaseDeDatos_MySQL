@@ -1,1 +1,161 @@
+/* Crear base de datos dbGamarraMarket */
+DROP DATABASE IF EXISTS dbGamarraMarket;
+CREATE DATABASE dbGamarraMarket
+DEFAULT CHARACTER SET utf8;
+USE dbGamarraMarket;
 
+/* Crear Tabla Cliente */
+CREATE TABLE CLIENTE (
+    id INT,
+    tipo_documento CHAR(3),
+    numero_documento CHAR(15),
+    nombres VARCHAR(60),
+    apellidos VARCHAR(90),
+    email VARCHAR(80),
+    celular CHAR(9),
+    fecha_nacimiento DATE,
+    CONSTRAINT CLIENTE_pk PRIMARY KEY (id)
+);
+SHOW COLUMNS IN CLIENTE;
+SHOW TABLES;
+
+/* Crear Tabla Prenda */
+CREATE TABLE PRENDA 
+(
+    id int,
+    descripcion varchar(90),
+    marca varchar(60),
+    cantidad int,
+    talla varchar(60),
+    precio decimal(8,2),
+    activo bool,
+    CONSTRAINT PRENDA_pk PRIMARY KEY (id)
+);
+SHOW COLUMNS IN PRENDA;
+SHOW TABLES;
+
+
+/* Crear Tabla Vendedor */
+CREATE TABLE VENDEDOR 
+(
+    id int,
+    tipo_documento char(3),
+    numero_documento char(15),
+    nombres varchar(60),
+    apellidos varchar(90),
+    salario decimal(8,2),
+    celular char(9),
+    email varchar(80),
+    activo bool,
+    VENTA_id int,
+    CONSTRAINT VENDEDOR_pk PRIMARY KEY (id)
+);
+SHOW COLUMNS IN VENDEDOR;
+SHOW TABLES;
+
+/* Crear Tabla Venta*/
+CREATE TABLE VENTA 
+(
+    id int,
+    fecha_hora timestamp,
+    activo bool,
+    CLIENTE_id int,
+    CONSTRAINT VENTA_pk PRIMARY KEY (id)
+);
+SHOW COLUMNS IN VENTA;
+SHOW TABLES;
+
+
+/* Crear Tabla Venta_Detalle */
+CREATE TABLE VENTA_DETALLE 
+(
+    id int,
+    cantidad int,
+    VENTA_id int,
+    PRENDA_id int,
+    CONSTRAINT VENTA_DETALLE_pk PRIMARY KEY (id)
+);
+SHOW COLUMNS IN VENTA_DETALLE;
+SHOW TABLES;
+
+
+/* Crear relación VENTA_CLIENTE */
+ALTER TABLE venta
+	ADD CONSTRAINT venta_cliente FOREIGN KEY (cliente_id)
+    REFERENCES cliente (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+;
+
+/* Listar relaciones de tablas de la base de datos activa */
+SELECT 
+    i.constraint_name, k.table_name, k.column_name, 
+    k.referenced_table_name, k.referenced_column_name
+FROM 
+    information_schema.TABLE_CONSTRAINTS i 
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k 
+ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME 
+WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' 
+AND i.TABLE_SCHEMA = DATABASE();
+
+
+/* Crear relación VENTA_VENDEDOR */
+ALTER TABLE venta
+	ADD CONSTRAINT venta_vendedor FOREIGN KEY (vendedor_id)
+    REFERENCES vendedor (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+;
+
+/* Listar relaciones de tablas de la base de datos activa */
+SELECT 
+    i.constraint_name, k.table_name, k.column_name, 
+    k.referenced_table_name, k.referenced_column_name
+FROM 
+    information_schema.TABLE_CONSTRAINTS i 
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k 
+ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME 
+WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' 
+AND i.TABLE_SCHEMA = DATABASE();
+
+
+
+/* Crear relación VENTA_DETALLE_VENTA */
+ALTER TABLE venta_detalle
+	ADD CONSTRAINT venta_detalle_venta FOREIGN KEY (venta_id)
+    REFERENCES venta (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+;
+
+/* Listar relaciones de tablas de la base de datos activa */
+SELECT 
+    i.constraint_name, k.table_name, k.column_name, 
+    k.referenced_table_name, k.referenced_column_name
+FROM 
+    information_schema.TABLE_CONSTRAINTS i 
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k 
+ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME 
+WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' 
+AND i.TABLE_SCHEMA = DATABASE();
+
+
+/* Crear relación VENTA_DETALLE_PRENDA */
+ALTER TABLE venta_detalle
+	ADD CONSTRAINT venta_detalle_prenda FOREIGN KEY (prenda_id)
+    REFERENCES prenda (id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+;
+
+/* Listar relaciones de tablas de la base de datos activa */
+SELECT 
+    i.constraint_name, k.table_name, k.column_name, 
+    k.referenced_table_name, k.referenced_column_name
+FROM 
+    information_schema.TABLE_CONSTRAINTS i 
+LEFT JOIN information_schema.KEY_COLUMN_USAGE k 
+ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME 
+WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' 
+AND i.TABLE_SCHEMA = DATABASE();
+    
